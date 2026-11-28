@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
     'api'
 ]
 
@@ -72,9 +74,34 @@ TEMPLATES = [
 WSGI_APPLICATION = 'delta_frame_server.wsgi.application'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'EXCEPTION_HANDLER': 'api.exceptions.problem_detail_exception_handler',
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DeltaFrame API',
+    'DESCRIPTION': 'REST API for DeltaFrame tool issuance, return inspection, photo ingestion, and defect analysis.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'TAGS': [
+        {'name': 'Auth', 'description': 'JWT authentication and token refresh'},
+        {'name': 'Users', 'description': 'User account management'},
+        {'name': 'Tools', 'description': 'Equipment catalog and QR lookup'},
+        {'name': 'Camera Angles', 'description': 'Per-tool calibration targets'},
+        {'name': 'Sessions', 'description': 'Issuance and return inspection sessions'},
+        {'name': 'Photos', 'description': 'Multipart photo ingestion'},
+        {'name': 'Defects', 'description': 'Before/after defect analysis and approval'},
     ],
 }
 # Database

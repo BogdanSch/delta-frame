@@ -1,0 +1,2048 @@
+openapi: 3.0.3
+info:
+  title: DeltaFrame API
+  version: 1.0.0
+  description: REST API for DeltaFrame tool issuance, return inspection, photo ingestion,
+    and defect analysis.
+paths:
+  /api/v1/auth/token/:
+    post:
+      operationId: v1_auth_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: v1_auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/camera-angles/:
+    get:
+      operationId: v1_camera_angles_list
+      parameters:
+      - in: query
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Camera Angles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CameraAngleResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    post:
+      operationId: v1_camera_angles_create
+      tags:
+      - Camera Angles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCameraAngleRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateCameraAngleRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateCameraAngleRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraAngleResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/camera-angles/{angle_id}/:
+    get:
+      operationId: v1_camera_angles_retrieve
+      parameters:
+      - in: path
+        name: angle_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Camera Angles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraAngleResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    patch:
+      operationId: v1_camera_angles_partial_update
+      parameters:
+      - in: path
+        name: angle_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Camera Angles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCameraAngleRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCameraAngleRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCameraAngleRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraAngleResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_camera_angles_destroy
+      parameters:
+      - in: path
+        name: angle_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Camera Angles
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/defects/:
+    get:
+      operationId: v1_defects_list
+      parameters:
+      - in: query
+        name: is_approved
+        schema:
+          type: boolean
+      - in: query
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Defects
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefectAnalysisResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/defects/{defect_id}/:
+    get:
+      operationId: v1_defects_retrieve
+      parameters:
+      - in: path
+        name: defect_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Defects
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefectAnalysisResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    patch:
+      operationId: v1_defects_partial_update
+      parameters:
+      - in: path
+        name: defect_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Defects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDefectRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDefectRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDefectRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefectAnalysisResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_defects_destroy
+      parameters:
+      - in: path
+        name: defect_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Defects
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/defects/{defect_id}/approve/:
+    patch:
+      operationId: v1_defects_approve_partial_update
+      parameters:
+      - in: path
+        name: defect_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Defects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedApproveDefectRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedApproveDefectRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedApproveDefectRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefectAnalysisResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/photos/:
+    get:
+      operationId: v1_photos_list
+      parameters:
+      - in: query
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Photos
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PhotoResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    post:
+      operationId: v1_photos_create
+      tags:
+      - Photos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadPhotoRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/photos/{photo_id}/:
+    get:
+      operationId: v1_photos_retrieve
+      parameters:
+      - in: path
+        name: photo_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Photos
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_photos_destroy
+      parameters:
+      - in: path
+        name: photo_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Photos
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/sessions/:
+    get:
+      operationId: v1_sessions_list
+      parameters:
+      - in: query
+        name: conclusion
+        schema:
+          type: string
+          enum:
+          - CLEAN
+          - DAMAGED
+          - MINOR_WEAR
+          - UNVERIFIED
+      - in: query
+        name: session_type
+        schema:
+          type: string
+          enum:
+          - ISSUANCE
+          - RETURN
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - COMPLETED
+          - PENDING
+          - SYNCED
+      - in: query
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: worker_id
+        schema:
+          type: integer
+      tags:
+      - Sessions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionSummaryResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    post:
+      operationId: v1_sessions_create
+      tags:
+      - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionSummaryResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/sessions/{session_id}/:
+    get:
+      operationId: v1_sessions_retrieve
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Sessions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    patch:
+      operationId: v1_sessions_partial_update
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_sessions_destroy
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Sessions
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/sessions/{session_id}/complete/:
+    post:
+      operationId: v1_sessions_complete_create
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteSessionRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CompleteSessionRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CompleteSessionRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/sessions/sync/:
+    post:
+      operationId: v1_sessions_sync_create
+      tags:
+      - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncSessionRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SyncSessionRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SyncSessionRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponseDTO'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetailResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/tools/:
+    get:
+      operationId: v1_tools_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - AVAILABLE
+          - IN_USE
+          - MAINTENANCE
+      tags:
+      - Tools
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ToolDetailResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    post:
+      operationId: v1_tools_create
+      tags:
+      - Tools
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateToolRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateToolRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateToolRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolDetailResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/tools/{tool_id}/:
+    get:
+      operationId: v1_tools_retrieve
+      parameters:
+      - in: path
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Tools
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolDetailResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    patch:
+      operationId: v1_tools_partial_update
+      parameters:
+      - in: path
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Tools
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateToolRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateToolRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateToolRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolDetailResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_tools_destroy
+      parameters:
+      - in: path
+        name: tool_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Tools
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/tools/by-qr/{qr_code}/:
+    get:
+      operationId: v1_tools_by_qr_retrieve
+      parameters:
+      - in: path
+        name: qr_code
+        schema:
+          type: string
+        required: true
+      tags:
+      - Tools
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolDetailResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/users/:
+    get:
+      operationId: v1_users_list
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: role
+        schema:
+          type: string
+          enum:
+          - ADMIN
+          - INSPECTOR
+          - WORKER
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    post:
+      operationId: v1_users_create
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequestDTORequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/users/{user_id}/:
+    get:
+      operationId: v1_users_retrieve
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    patch:
+      operationId: v1_users_partial_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUserRequestDTORequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUserRequestDTORequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUserRequestDTORequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+    delete:
+      operationId: v1_users_destroy
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+  /api/v1/users/me/:
+    get:
+      operationId: v1_users_me_retrieve
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailDTO'
+          description: ''
+components:
+  schemas:
+    CameraAngleResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        tool_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        target_distance_cm:
+          type: number
+          format: double
+        target_lux:
+          type: integer
+        tolerance_margin_cm:
+          type: number
+          format: double
+      required:
+      - id
+      - name
+      - target_distance_cm
+      - target_lux
+      - tolerance_margin_cm
+      - tool_id
+    CompleteSessionRequestDTORequest:
+      type: object
+      properties:
+        conclusion:
+          $ref: '#/components/schemas/ConclusionEnum'
+      required:
+      - conclusion
+    ConclusionEnum:
+      enum:
+      - CLEAN
+      - MINOR_WEAR
+      - DAMAGED
+      - UNVERIFIED
+      type: string
+      description: |-
+        * `CLEAN` - CLEAN
+        * `MINOR_WEAR` - MINOR_WEAR
+        * `DAMAGED` - DAMAGED
+        * `UNVERIFIED` - UNVERIFIED
+    CreateCameraAngleRequestDTORequest:
+      type: object
+      properties:
+        tool_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        target_distance_cm:
+          type: number
+          format: double
+          minimum: 0.0
+        target_lux:
+          type: integer
+          minimum: 0
+        tolerance_margin_cm:
+          type: number
+          format: double
+          minimum: 0.0
+          default: 2.5
+      required:
+      - name
+      - target_distance_cm
+      - target_lux
+      - tool_id
+    CreateSessionRequestDTORequest:
+      type: object
+      properties:
+        tool_id:
+          type: string
+          format: uuid
+        worker_id:
+          type: integer
+          nullable: true
+        session_type:
+          $ref: '#/components/schemas/SessionTypeEnum'
+      required:
+      - session_type
+      - tool_id
+    CreateToolRequestDTORequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          default: ''
+      required:
+      - name
+    CreateUserRequestDTORequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 4
+        email:
+          oneOf:
+          - type: string
+            format: email
+            default: ''
+          - type: string
+            maxLength: 0
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          default: WORKER
+        first_name:
+          type: string
+          default: ''
+          maxLength: 150
+        last_name:
+          type: string
+          default: ''
+          maxLength: 150
+      required:
+      - password
+      - username
+    DefectAnalysisResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+          format: uuid
+        angle_id:
+          type: integer
+        before_photo_id:
+          type: string
+          format: uuid
+        before_image_url:
+          type: string
+          readOnly: true
+        after_photo_id:
+          type: string
+          format: uuid
+        after_image_url:
+          type: string
+          readOnly: true
+        difference_index:
+          type: number
+          format: double
+        description:
+          type: string
+        bounding_boxes:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        is_approved_by_human:
+          type: boolean
+      required:
+      - after_image_url
+      - after_photo_id
+      - angle_id
+      - before_image_url
+      - before_photo_id
+      - bounding_boxes
+      - description
+      - difference_index
+      - id
+      - is_approved_by_human
+      - session_id
+    PatchedApproveDefectRequestDTORequest:
+      type: object
+      properties:
+        description:
+          type: string
+        bounding_boxes:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+    PatchedUpdateCameraAngleRequestDTORequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        target_distance_cm:
+          type: number
+          format: double
+          minimum: 0.0
+        target_lux:
+          type: integer
+          minimum: 0
+        tolerance_margin_cm:
+          type: number
+          format: double
+          minimum: 0.0
+    PatchedUpdateDefectRequestDTORequest:
+      type: object
+      properties:
+        difference_index:
+          type: number
+          format: double
+          maximum: 1.0
+          minimum: 0.0
+        description:
+          type: string
+        bounding_boxes:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+    PatchedUpdateSessionRequestDTORequest:
+      type: object
+      properties:
+        worker_id:
+          type: integer
+          nullable: true
+        conclusion:
+          $ref: '#/components/schemas/ConclusionEnum'
+    PatchedUpdateToolRequestDTORequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+    PatchedUpdateUserRequestDTORequest:
+      type: object
+      properties:
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+        password:
+          type: string
+          writeOnly: true
+          minLength: 4
+    PhotoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+          format: uuid
+        angle_id:
+          type: integer
+        angle_name:
+          type: string
+        image_url:
+          type: string
+          readOnly: true
+        source_device:
+          type: string
+        measured_distance_cm:
+          type: number
+          format: double
+        measured_lux:
+          type: integer
+        is_geometry_valid:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - angle_id
+      - angle_name
+      - id
+      - image_url
+      - is_geometry_valid
+      - measured_distance_cm
+      - measured_lux
+      - session_id
+      - source_device
+      - timestamp
+    ProblemDetailDTO:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        code:
+          type: string
+        errors:
+          type: object
+          additionalProperties: {}
+      required:
+      - code
+      - detail
+      - status
+      - title
+    RoleEnum:
+      enum:
+      - ADMIN
+      - INSPECTOR
+      - WORKER
+      type: string
+      description: |-
+        * `ADMIN` - ADMIN
+        * `INSPECTOR` - INSPECTOR
+        * `WORKER` - WORKER
+    SessionDetailResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tool_id:
+          type: string
+          format: uuid
+        tool_name:
+          type: string
+        inspector_id:
+          type: integer
+        worker_id:
+          type: integer
+          nullable: true
+        session_type:
+          type: string
+        status:
+          type: string
+        conclusion:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoResponseDTO'
+        defect_analyses:
+          type: array
+          items:
+            $ref: '#/components/schemas/DefectAnalysisResponseDTO'
+      required:
+      - conclusion
+      - created_at
+      - defect_analyses
+      - id
+      - inspector_id
+      - photos
+      - session_type
+      - status
+      - tool_id
+      - tool_name
+      - worker_id
+    SessionSummaryResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tool_id:
+          type: string
+          format: uuid
+        tool_name:
+          type: string
+        inspector_id:
+          type: integer
+        worker_id:
+          type: integer
+          nullable: true
+        session_type:
+          type: string
+        status:
+          type: string
+        conclusion:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - conclusion
+      - created_at
+      - id
+      - inspector_id
+      - session_type
+      - status
+      - tool_id
+      - tool_name
+      - worker_id
+    SessionTypeEnum:
+      enum:
+      - ISSUANCE
+      - RETURN
+      type: string
+      description: |-
+        * `ISSUANCE` - ISSUANCE
+        * `RETURN` - RETURN
+    SourceDeviceEnum:
+      enum:
+      - IOT
+      - MOBILE
+      type: string
+      description: |-
+        * `IOT` - IOT
+        * `MOBILE` - MOBILE
+    StatusEnum:
+      enum:
+      - AVAILABLE
+      - IN_USE
+      - MAINTENANCE
+      type: string
+      description: |-
+        * `AVAILABLE` - AVAILABLE
+        * `IN_USE` - IN_USE
+        * `MAINTENANCE` - MAINTENANCE
+    SyncSessionRequestDTORequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tool_id:
+          type: string
+          format: uuid
+        worker_id:
+          type: integer
+          nullable: true
+        session_type:
+          $ref: '#/components/schemas/SessionTypeEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - id
+      - session_type
+      - tool_id
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    ToolDetailResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        qr_code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        camera_angles:
+          type: array
+          items:
+            $ref: '#/components/schemas/CameraAngleResponseDTO'
+      required:
+      - camera_angles
+      - created_at
+      - description
+      - id
+      - name
+      - qr_code
+      - status
+    UploadPhotoRequestDTORequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+          format: uuid
+        angle_id:
+          type: integer
+        image_file:
+          type: string
+          format: binary
+        source_device:
+          $ref: '#/components/schemas/SourceDeviceEnum'
+        measured_distance_cm:
+          type: number
+          format: double
+          minimum: 0.0
+        measured_lux:
+          type: integer
+          minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - angle_id
+      - image_file
+      - measured_distance_cm
+      - measured_lux
+      - session_id
+      - source_device
+    UserResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        role:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - email
+      - first_name
+      - id
+      - is_active
+      - last_name
+      - role
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+- name: Auth
+  description: JWT authentication and token refresh
+- name: Users
+  description: User account management
+- name: Tools
+  description: Equipment catalog and QR lookup
+- name: Camera Angles
+  description: Per-tool calibration targets
+- name: Sessions
+  description: Issuance and return inspection sessions
+- name: Photos
+  description: Multipart photo ingestion
+- name: Defects
+  description: Before/after defect analysis and approval
